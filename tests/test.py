@@ -78,3 +78,21 @@ def test_time_iso():
     make_template(
         [['Sheet1', 'row_indexed', 'time']])
     assert call_xls2asp(silent=True) != 0
+
+def test_int_as_string():
+    make_excel(
+            [['123', 'Hans'], ['Manuel', '321']])
+    make_template(
+        [['Sheet1', 'row', 'string', 'string']])
+    assert call_xls2asp() == 0
+    check_in_facts('sheet1("123","Hans")')
+    check_in_facts('sheet1("Manuel","321")')
+
+def test_auto_detect():
+    make_excel(
+            [['123', 'Hans'], ['Manuel', '321']])
+    make_template(
+        [['Sheet1', 'row', 'auto_detect', 'auto_detect']])
+    assert call_xls2asp() == 0
+    check_in_facts('sheet1(123,"Hans")')
+
