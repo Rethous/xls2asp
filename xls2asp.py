@@ -116,6 +116,10 @@ class Conversion:
                 r += ";\""+s+"\""
             r += ")"
             return r
+    @staticmethod
+    def normalize_int_as_string(value):
+        return "\""+str(value)+"\""
+
 
     @staticmethod
     def make_predicate(value):
@@ -349,6 +353,8 @@ class Instance:
             return default
         if isinstance(value, str):
             return Conversion.normalize_string(value)
+        if isinstance(str(value), str):
+            return Conversion.normalize_int_as_string(value)
         else:
             raise SheetRowColumnWrongTypeValueError(
                 table, row, col, "Expecting a string, getting:", value)
@@ -530,7 +536,7 @@ class Instance:
         for r in self.data[table]["rows"]:
             if r != 1:
                 for col in range(1, len(self.data[table]["rows"][r])):
-                    if not self.is_skip(table, col):
+                     if not self.is_skip(table, col):
                         if not sparse or self.data[table]["rows"][r][col] != None:
                             self.data[table]["rows"][r][col] = test(
                                 table, r, col, self.data[table]["rows"][r][col], default_v)
