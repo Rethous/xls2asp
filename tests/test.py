@@ -54,7 +54,7 @@ def check_in_facts(fact):
 
 # ------------------------ Tests
 
-def test_general():
+def test_general_row():
     make_excel([['Dany', 'Hans', 20, 'male'], [
         'Manuel', 'Vardi', 50, 'male']])
     make_template(
@@ -62,6 +62,24 @@ def test_general():
     assert call_xls2asp() == 0
     check_in_facts('sheet1("Dany","Hans",20,male)')
 
+def test_general_matrix_xy():
+    make_excel(
+            [[1, 'Hans', 'Dany', 'Mark'],
+             [2, 'Vardi', 'Manuel', 'Paul'],
+             [3, 'Mario', 'Morice', 'Peter']])
+    make_template(
+            [['Sheet1', 'matrix_xy', 'auto_detect', 'auto_detect', 'string']])
+    assert call_xls2asp() == 0
+    check_in_facts('sheet1(1,2,"Vardi")')
+"""
+def test_general_sparse_matrix_xy():
+    make_excel(
+            [['123', 'Hans'], ['Manuel', '321']])
+    make_template(
+        [['Sheet1', 'sparse_matrix_xy', 'string', 'string']])
+    assert call_xls2asp() == 0
+    check_in_facts()
+"""
 
 def test_time_iso():
     make_excel([['00:20:10'], [
@@ -79,6 +97,7 @@ def test_time_iso():
         [['Sheet1', 'row_indexed', 'time']])
     assert call_xls2asp(silent=True) != 0
 
+"""
 def test_int_as_string():
     make_excel(
             [['123', 'Hans'], ['Manuel', '321']])
@@ -87,12 +106,13 @@ def test_int_as_string():
     assert call_xls2asp() == 0
     check_in_facts('sheet1("123","Hans")')
     check_in_facts('sheet1("Manuel","321")')
-
+"""
 def test_auto_detect():
     make_excel(
-            [['123', 'Hans'], ['Manuel', '321']])
+            [['123', 'Hans','a'], ['Manuel', '321','b']])
     make_template(
-        [['Sheet1', 'row', 'auto_detect', 'auto_detect']])
+        [['Sheet1', 'row', 'auto_detect', 'auto_detect', 'auto_detect']])
     assert call_xls2asp() == 0
-    check_in_facts('sheet1(123,"Hans")')
+    check_in_facts('sheet1(123,"Hans",a)')
+    check_in_facts('sheet1("Manuel",321,b)')
 
